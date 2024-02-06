@@ -33,11 +33,13 @@ class BrandController extends ApiController
             'image' => 'required|image'
         ]);
         if ($validate->fails()) {
-            return $this->errorResponse(422, $validate->messages());
+            return $this->errorResponse(HttpResponse::HTTP_UNPROCESSABLE_ENTITY, $validate->messages());
         }
         $brand->newBrand($request);
         $dataResponse = $brand->orderBy('id', 'desc')->first();
-        return $this->successResponse(201, new BrandResource($dataResponse), 'brand created successfully');
+        return $this->successResponse(HttpResponse::HTTP_CREATED,
+            new BrandResource($dataResponse),
+            'brand created successfully');
     }
 
     /**
@@ -58,18 +60,22 @@ class BrandController extends ApiController
             ->exists();
 
         if ($brandUniq) {
-            return $this->errorResponse(422, 'The title has already been taken');
+            return $this->errorResponse(HttpResponse::HTTP_UNPROCESSABLE_ENTITY,
+                'The title has already been taken');
         }
         $validate = Validator::make($request->all(), [
             'title' => 'required|string',
             'image' => 'image'
         ]);
         if ($validate->fails()) {
-            return $this->errorResponse(422, $validate->messages());
+            return $this->errorResponse(HttpResponse::HTTP_UNPROCESSABLE_ENTITY,
+                $validate->messages());
         }
         $brand->updateBrand($request);
 //        $dataResponse = $brand->orderBy('id', 'desc')->first();
-        return $this->successResponse(201, new BrandResource($brand), 'brand updated successfully');
+        return $this->successResponse(HttpResponse::HTTP_CREATED,
+            new BrandResource($brand),
+            'brand updated successfully');
 
 
     }
@@ -78,9 +84,11 @@ class BrandController extends ApiController
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Brand $brand)
+    public function destroy(Brand $brand): JsonResponse
     {
         $brand->delete();
-        return $this->successResponse(200, null, $brand->title . ' ' . 'deleted successfully');
+        return $this->successResponse(HttpResponse::HTTP_OK,
+            null,
+            $brand->title . ' ' . 'deleted successfully');
     }
 }

@@ -16,24 +16,27 @@ class Brand extends Model
 
     public function newBrand($request): void
     {
-        $imagePath = Carbon::now()->microsecond . '.' . $request->image->extension();
-        $request->image->storeAs('image/brands', $imagePath, 'public');
         $this->query()->create([
             'title' => $request->title,
-            'image' => $imagePath
+            'image' => $this->saveImage($request)
         ]);
     }
 
     public function updateBrand($request): void
     {
         if ($request->has('image')) {
-            $imagePath = Carbon::now()->microsecond . '.' . $request->image->extension();
-            $request->image->storeAs('image/brands', $imagePath, 'public');
+            $this->saveImage($request);
         }
-
         $this->update([
             'title' => $request->title,
             'image' => $request->has('image') ? $request->image : $this->image
         ]);
+    }
+
+    public function saveImage($request): string
+    {
+        $imagePath = Carbon::now()->microsecond . '.' . $request->image->extension();
+        $request->image->storeAs('image/brands', $imagePath, 'public');
+        return $imagePath;
     }
 }
