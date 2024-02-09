@@ -4,8 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\ApiController;
 use App\Http\Resources\admin\CategoryResource;
-use App\Http\Resources\BrandResource;
-use App\Models\Brand;
 use App\Models\Category;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -95,4 +93,19 @@ class CategoryController extends ApiController
             'Category deleted successfully'
         );
     }
+
+    public function parent(Category $category): JsonResponse
+    {
+        return $this->successResponse(HttpResponse::HTTP_OK,
+            new CategoryResource($category->load('parent')),
+            'Get parents');
+    }
+
+    public function children(Category $category): JsonResponse
+    {
+        return $this->successResponse(HttpResponse::HTTP_OK,
+            new CategoryResource($category->load('children')),
+            'Get children');
+    }
+
 }
