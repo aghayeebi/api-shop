@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,11 +16,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-//Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//    return $request->user();
-//});
 
+//Admin
 Route::apiResource('brands', BrandController::class);
 Route::apiResource('category', CategoryController::class);
 Route::get('category/{category}/parent', [CategoryController::class, 'parent']);
 Route::get('category/{category}/children', [CategoryController::class, 'children']);
+
+
+Route::apiResource('category', ProductController::class);
