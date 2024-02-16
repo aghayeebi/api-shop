@@ -2,23 +2,51 @@
 
 namespace App\Models;
 
+use App\Plugins\Plugin;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 
+/**
+ * App\Models\Brand
+ *
+ * @property int $id
+ * @property string $title
+ * @property string $image
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Database\Factories\BrandFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder|Brand newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Brand newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Brand onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Brand query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Brand whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Brand whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Brand whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Brand whereImage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Brand whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Brand whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Brand withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Brand withoutTrashed()
+ * @mixin \Eloquent
+ */
 class Brand extends Model
 {
     use HasFactory, SoftDeletes;
 
     protected $guarded = [];
+    protected $table = 'brands';
+
+    protected string $path = 'brand';
 
     public function newBrand($request): void
     {
         $this->query()->create([
             'title' => $request->title,
-            'image' => $this->saveImage($request)
+            'image' => Plugin::saveImage($request, $this->path)
         ]);
     }
 
@@ -33,10 +61,4 @@ class Brand extends Model
         ]);
     }
 
-    public function saveImage($request): string
-    {
-        $imagePath = Carbon::now()->microsecond . '.' . $request->image->extension();
-        $request->image->storeAs('image/brands', $imagePath, 'public');
-        return $imagePath;
-    }
 }

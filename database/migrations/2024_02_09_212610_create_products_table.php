@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('image');
             $table->unsignedSmallInteger('price')->default(0);
             $table->unsignedSmallInteger('quantity')->default(0);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

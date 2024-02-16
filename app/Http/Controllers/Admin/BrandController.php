@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\BrandFormRequest;
 use App\Http\Resources\BrandResource;
 use App\Models\Brand;
 use Illuminate\Http\JsonResponse;
@@ -26,15 +27,8 @@ class BrandController extends ApiController
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, Brand $brand): JsonResponse
+    public function store(BrandFormRequest $request, Brand $brand): JsonResponse
     {
-        $validate = Validator::make($request->all(), [
-            'title' => 'required|string|unique:brands,title',
-            'image' => 'required|image'
-        ]);
-        if ($validate->fails()) {
-            return $this->errorResponse(HttpResponse::HTTP_UNPROCESSABLE_ENTITY, $validate->messages());
-        }
         $brand->newBrand($request);
         $dataResponse = $brand->orderBy('id', 'desc')->first();
         return $this->successResponse(HttpResponse::HTTP_CREATED,
@@ -45,7 +39,7 @@ class BrandController extends ApiController
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $id): JsonResponse
     {
         //
     }

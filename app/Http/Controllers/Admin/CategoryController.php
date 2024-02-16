@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\ApiController;
+use App\Http\Requests\CategoryFormRequest;
 use App\Http\Resources\admin\CategoryResource;
 use App\Models\Category;
 use Illuminate\Http\JsonResponse;
@@ -27,16 +28,9 @@ class CategoryController extends ApiController
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, Category $category): JsonResponse
+    public function store(CategoryFormRequest $request, Category $category): JsonResponse
     {
-        $validate = Validator::make($request->all(), [
-            'title' => 'required|string|unique:categories,title',
-            'parent_id' => 'integer'
-        ]);
-        if ($validate->fails()) {
-            return $this->errorResponse(HttpResponse::HTTP_UNPROCESSABLE_ENTITY,
-                $validate->messages());
-        }
+
         $category->newCategory($request);
         $dataResponse = $category->orderBy('id', 'desc')->first();
         return $this->successResponse(HttpResponse::HTTP_CREATED,

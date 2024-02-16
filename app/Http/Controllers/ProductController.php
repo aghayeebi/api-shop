@@ -2,25 +2,40 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProductFormRequest;
+use App\Http\Resources\ProductResource;
 use App\Models\Product;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response as HttpResponse;
+
 
 class ProductController extends ApiController
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): JsonResponse
     {
-        //
+        $product = Product::query()->paginate(10);
+        return $this->successResponse(HttpResponse::HTTP_CREATED, [
+                'product' => ProductResource::collection($product),
+                'links' => ProductResource::collection($product)->response()->getData()->links,
+            ]
+            ,
+            'Product index successfully');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ProductFormRequest $request, Product $product): JsonResponse
     {
-        //
+        $product->newProduct($request);
+        $responseDta = $product->orderBy('id', 'desc')->first();
+        return $this->successResponse(HttpResponse::HTTP_OK,
+            new ProductResource($responseDta),
+            'Product created successfully');
     }
 
     /**

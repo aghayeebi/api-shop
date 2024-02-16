@@ -24,4 +24,4 @@ Route::get('category/{category}/parent', [CategoryController::class, 'parent']);
 Route::get('category/{category}/children', [CategoryController::class, 'children']);
 
 
-Route::apiResource('category', ProductController::class);
+Route::apiResource('products', ProductController::class);
