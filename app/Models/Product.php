@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\JsonResponse;
 
@@ -55,6 +56,7 @@ class Product extends Model
     protected $guarded = [];
     protected $table = 'products';
 
+    //Relationships
 
     public function category(): BelongsTo
     {
@@ -64,8 +66,15 @@ class Product extends Model
     public function brand(): BelongsTo
     {
         return $this->belongsTo(Brand::class);
-
     }
+
+    public function galleries(): HasMany
+    {
+        return $this->hasMany(Gallery::class);
+    }
+
+    //End Relationships
+
 
     public function newProduct($request): void
     {
@@ -85,7 +94,6 @@ class Product extends Model
 
     public function updateProduct($request): void
     {
-
         if ($request->has('image')) {
             $imagePath = Plugin::saveImage($request, 'products');
         }
@@ -100,6 +108,5 @@ class Product extends Model
             'quantity' => $request->quantity,
         ]);
     }
-
 
 }

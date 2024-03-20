@@ -91,6 +91,6 @@ class ProductController extends ApiController
     {
         $product->delete();
         $product->save();
-        return $this->successResponse(HttpResponse::HTTP_ACCEPTED, null, $product->name.' deleted successfully');
+        return $this->successResponse(HttpResponse::HTTP_ACCEPTED, null, $product->name . ' deleted successfully');
     }
 }
