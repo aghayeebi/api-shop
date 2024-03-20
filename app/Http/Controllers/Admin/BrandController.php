@@ -66,7 +66,6 @@ class BrandController extends ApiController
                 $validate->messages());
         }
         $brand->updateBrand($request);
-//        $dataResponse = $brand->orderBy('id', 'desc')->first();
         return $this->successResponse(HttpResponse::HTTP_CREATED,
             new BrandResource($brand),
             'brand updated successfully');
@@ -81,6 +80,7 @@ class BrandController extends ApiController
     public function destroy(Brand $brand): JsonResponse
     {
         $brand->delete();
+        $brand->save();
         return $this->successResponse(HttpResponse::HTTP_OK,
             null,
             $brand->title . ' ' . 'deleted successfully');

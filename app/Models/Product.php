@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Http\JsonResponse;
 
 /**
  * App\Models\Product
@@ -55,8 +56,6 @@ class Product extends Model
     protected $table = 'products';
 
 
-
-
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
@@ -70,14 +69,33 @@ class Product extends Model
 
     public function newProduct($request): void
     {
-        $imagePath = Plugin::saveImage($request, $this->path);
-        $this->query()->create([
+        $imagePath = Plugin::saveImage($request, 'products');
+
+        self::query()->create([
             'category_id' => $request->category_id,
             'brand_id' => $request->brand_id,
             'name' => $request->name,
             'slug' => $request->slug,
             'price' => $request->price,
             'image' => $imagePath,
+            'description' => $request->description,
+            'quantity' => $request->quantity,
+        ]);
+    }
+
+    public function updateProduct($request): void
+    {
+
+        if ($request->has('image')) {
+            $imagePath = Plugin::saveImage($request, 'products');
+        }
+        $this->update([
+            'category_id' => $request->category_id,
+            'brand_id' => $request->brand_id,
+            'name' => $request->name,
+            'slug' => $request->has('slug') ? $request->slug : $this->slug,
+            'price' => $request->price,
+            'image' => $request->has('image') ? $imagePath : $this->image,
             'description' => $request->description,
             'quantity' => $request->quantity,
         ]);

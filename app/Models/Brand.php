@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Http\JsonResponse;
 
 
 /**
@@ -44,16 +45,16 @@ class Brand extends Model
 
     public function newBrand($request): void
     {
-        $this->query()->create([
+        self::query()->create([
             'title' => $request->title,
-            'image' => Plugin::saveImage($request, $this->path)
+            'image' => Plugin::saveImage($request, 'brands')
         ]);
     }
 
     public function updateBrand($request): void
     {
         if ($request->has('image')) {
-            $this->saveImage($request);
+            Plugin::saveImage($request, 'brands');
         }
         $this->update([
             'title' => $request->title,
