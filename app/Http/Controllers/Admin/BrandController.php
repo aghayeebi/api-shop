@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\BrandFormRequest;
 use App\Http\Resources\BrandResource;
 use App\Models\Brand;
+use App\Models\Product;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -84,5 +85,12 @@ class BrandController extends ApiController
         return $this->successResponse(HttpResponse::HTTP_OK,
             null,
             $brand->title . ' ' . 'deleted successfully');
+    }
+
+    public function getProducts(Brand $brand): JsonResponse
+    {
+        return $this->successResponse(HttpResponse::HTTP_OK,
+            new BrandResource($brand->load('products')),
+            'Get products');
     }
 }

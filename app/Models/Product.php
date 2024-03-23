@@ -58,6 +58,11 @@ class Product extends Model
 
     //Relationships
 
+    public function galleries(): HasMany
+    {
+        return $this->hasMany(Gallery::class);
+    }
+
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
@@ -66,11 +71,6 @@ class Product extends Model
     public function brand(): BelongsTo
     {
         return $this->belongsTo(Brand::class);
-    }
-
-    public function galleries(): HasMany
-    {
-        return $this->hasMany(Gallery::class);
     }
 
     //End Relationships
